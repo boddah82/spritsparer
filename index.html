@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#00d4aa">
+  <title>SpritSparer 🚴</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      padding-top: max(16px, env(safe-area-inset-top));
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #00d4aa;
+    }
+
+    #settings-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 10px 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    .stat-card.highlight {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,212,170,0.05));
+      border: 1px solid rgba(0,212,170,0.3);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .stat-card.highlight .stat-value {
+      font-size: 56px;
+      color: #00d4aa;
+    }
+
+    .stat-unit {
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+
+    .stat-card.highlight .stat-unit {
+      color: rgba(0,212,170,0.6);
+    }
+
+    #status-bar {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      padding: 8px;
+      min-height: 28px;
+    }
+
+    #status-bar.active { color: #00d4aa; }
+    #status-bar.error { color: #ff6b6b; }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    #start-btn {
+      flex: 1;
+      padding: 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      background: #00d4aa;
+      color: #1a1a2e;
+    }
+
+    #start-btn.running {
+      background: #ff6b6b;
+      color: #fff;
+    }
+
+    #start-btn:active { transform: scale(0.97); }
+
+    #reset-btn {
+      padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      font-size: 20px;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    #reset-btn:active { transform: scale(0.97); }
+
+    /* Settings Modal */
+    #settings-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: flex-end;
+    }
+
+    #settings-modal.open { display: flex; }
+
+    .modal-sheet {
+      background: #16213e;
+      width: 100%;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 24px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .modal-sheet h2 {
+      font-size: 18px;
+      margin-bottom: 24px;
+      color: #00d4aa;
+    }
+
+    .setting-row {
+      margin-bottom: 20px;
+    }
+
+    .setting-row label {
+      display: block;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .setting-row input {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .setting-row input:focus {
+      border-color: #00d4aa;
+    }
+
+    #save-settings {
+      width: 100%;
+      padding: 16px;
+      background: #00d4aa;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    #gps-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    #gps-dot.on { background: #00d4aa; animation: pulse 1.5s infinite; }
+    #gps-dot.error { background: #ff6b6b; animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚴 SpritSparer</h1>
+  <button id="settings-btn">⚙️</button>
+</header>
+
+<main>
+  <div class="stats-grid">
+    <div class="stat-card highlight">
+      <div class="stat-label">Geld gespart</div>
+      <div class="stat-value" id="money">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sprit gespart</div>
+      <div class="stat-value" id="liters">0.00</div>
+      <div class="stat-unit">Liter</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Strecke</div>
+      <div class="stat-value" id="distance">0.00</div>
+      <div class="stat-unit">km</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Geschwindigkeit</div>
+      <div class="stat-value" id="speed">0</div>
+      <div class="stat-unit">km/h</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">CO₂ vermieden</div>
+      <div class="stat-value" id="co2">0</div>
+      <div class="stat-unit">Gramm</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Fahrzeit</div>
+      <div class="stat-value" id="time">0:00</div>
+      <div class="stat-unit">Min</div>
+    </div>
+  </div>
+
+  <div id="status-bar">
+    <span id="gps-dot"></span>
+    <span id="status-text">Bereit</span>
+  </div>
+</main>
+
+<div class="btn-row" style="padding: 0 20px 20px;">
+  <button id="start-btn">▶ Start</button>
+  <button id="reset-btn">↺</button>
+</div>
+
+<!-- Settings Modal -->
+<div id="settings-modal">
+  <div class="modal-sheet">
+    <h2>⚙️ Einstellungen</h2>
+    <div class="setting-row">
+      <label>Spritpreis (€/Liter)</label>
+      <input type="number" id="input-price" step="0.01" min="0.5" max="5">
+    </div>
+    <div class="setting-row">
+      <label>Verbrauch Auto (Liter/100 km)</label>
+      <input type="number" id="input-consumption" step="0.1" min="1" max="30">
+    </div>
+    <div class="setting-row">
+      <label>CO₂ pro Liter Benzin (Gramm)</label>
+      <input type="number" id="input-co2" step="1" min="100" max="5000">
+    </div>
+    <button id="save-settings">Speichern</button>
+  </div>
+</div>
+
+<script>
+  // Settings
+  const defaults = { price: 1.80, consumption: 7.0, co2PerLiter: 2392 };
+  let settings = { ...defaults, ...JSON.parse(localStorage.getItem('settings') || '{}') };
+
+  // State
+  let running = false;
+  let watchId = null;
+  let lastPos = null;
+  let totalDistance = 0; // km
+  let startTime = null;
+  let timerInterval = null;
+  let currentSpeed = 0;
+
+  // DOM
+  const moneyEl = document.getElementById('money');
+  const litersEl = document.getElementById('liters');
+  const distanceEl = document.getElementById('distance');
+  const speedEl = document.getElementById('speed');
+  const co2El = document.getElementById('co2');
+  const timeEl = document.getElementById('time');
+  const statusText = document.getElementById('status-text');
+  const gpsDot = document.getElementById('gps-dot');
+  const startBtn = document.getElementById('start-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const settingsBtn = document.getElementById('settings-btn');
+  const settingsModal = document.getElementById('settings-modal');
+
+  function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 +
+              Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function updateDisplay() {
+    const liters = totalDistance * settings.consumption / 100;
+    const money = liters * settings.price;
+    const co2 = liters * settings.co2PerLiter;
+
+    moneyEl.textContent = money.toFixed(2);
+    litersEl.textContent = liters.toFixed(2);
+    distanceEl.textContent = totalDistance.toFixed(2);
+    speedEl.textContent = Math.round(currentSpeed);
+    co2El.textContent = Math.round(co2);
+  }
+
+  function updateTimer() {
+    if (!startTime) return;
+    const secs = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    timeEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  }
+
+  function setStatus(msg, type = '') {
+    statusText.textContent = msg;
+    const statusBar = document.getElementById('status-bar');
+    statusBar.className = type;
+    gpsDot.className = type === 'active' ? 'on' : type === 'error' ? 'error' : '';
+  }
+
+  function start() {
+    if (!navigator.geolocation) {
+      setStatus('GPS nicht verfügbar', 'error');
+      return;
+    }
+
+    setStatus('GPS wird aktiviert…', '');
+    running = true;
+    startBtn.textContent = '⏹ Stop';
+    startBtn.classList.add('running');
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+
+    watchId = navigator.geolocation.watchPosition(
+      pos => {
+        const { latitude: lat, longitude: lon, speed } = pos.coords;
+        currentSpeed = speed ? speed * 3.6 : 0;
+
+        if (lastPos) {
+          const d = haversine(lastPos.lat, lastPos.lon, lat, lon);
+          if (d > 0.005) { // ignore jumps under 5m noise
+            totalDistance += d;
+            updateDisplay();
+          }
+        }
+        lastPos = { lat, lon };
+        setStatus('GPS aktiv', 'active');
+      },
+      err => {
+        setStatus('GPS Fehler: ' + err.message, 'error');
+      },
+      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
+    );
+  }
+
+  function stop() {
+    running = false;
+    if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+    clearInterval(timerInterval);
+    lastPos = null;
+    startBtn.textContent = '▶ Start';
+    startBtn.classList.remove('running');
+    setStatus('Gestoppt', '');
+  }
+
+  function reset() {
+    stop();
+    totalDistance = 0;
+    currentSpeed = 0;
+    startTime = null;
+    timeEl.textContent = '0:00';
+    updateDisplay();
+    setStatus('Bereit', '');
+  }
+
+  startBtn.addEventListener('click', () => running ? stop() : start());
+  resetBtn.addEventListener('click', reset);
+
+  // Settings
+  settingsBtn.addEventListener('click', () => {
+    document.getElementById('input-price').value = settings.price;
+    document.getElementById('input-consumption').value = settings.consumption;
+    document.getElementById('input-co2').value = settings.co2PerLiter;
+    settingsModal.classList.add('open');
+  });
+
+  settingsModal.addEventListener('click', e => {
+    if (e.target === settingsModal) settingsModal.classList.remove('open');
+  });
+
+  document.getElementById('save-settings').addEventListener('click', () => {
+    settings.price = parseFloat(document.getElementById('input-price').value) || defaults.price;
+    settings.consumption = parseFloat(document.getElementById('input-consumption').value) || defaults.consumption;
+    settings.co2PerLiter = parseFloat(document.getElementById('input-co2').value) || defaults.co2PerLiter;
+    localStorage.setItem('settings', JSON.stringify(settings));
+    settingsModal.classList.remove('open');
+    updateDisplay();
+  });
+
+  // PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+
+  // Wake Lock (screen on while riding)
+  let wakeLock = null;
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
+    }
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && running) requestWakeLock();
+  });
+
+  updateDisplay();
+</script>
+</body>
+</html>
