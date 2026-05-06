@@ -23,6 +23,7 @@
     }
 
     header {
+      flex-shrink: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -30,11 +31,7 @@
       padding-top: max(16px, env(safe-area-inset-top));
     }
 
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #00d4aa;
-    }
+    header h1 { font-size: 20px; font-weight: 700; color: #00d4aa; }
 
     #settings-btn {
       background: rgba(255,255,255,0.1);
@@ -52,22 +49,24 @@
 
     main {
       flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 20px 16px;
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
-      padding: 10px 20px;
+      gap: 10px;
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .stat-card {
       background: rgba(255,255,255,0.07);
-      border-radius: 20px;
-      padding: 20px 16px;
+      border-radius: 18px;
+      padding: 16px 12px;
       text-align: center;
     }
 
@@ -77,75 +76,86 @@
       border: 1px solid rgba(0,212,170,0.3);
     }
 
+    .stat-card.highlight-gold {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(255,200,0,0.18), rgba(255,200,0,0.04));
+      border: 1px solid rgba(255,200,0,0.3);
+    }
+
     .stat-label {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255,255,255,0.5);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .stat-value {
-      font-size: 42px;
+      font-size: 38px;
       font-weight: 800;
       line-height: 1;
       color: #fff;
     }
 
-    .stat-card.highlight .stat-value {
-      font-size: 56px;
-      color: #00d4aa;
-    }
+    .stat-card.highlight .stat-value { font-size: 52px; color: #00d4aa; }
+    .stat-card.highlight-gold .stat-value { font-size: 46px; color: #ffc800; }
 
     .stat-unit {
-      font-size: 16px;
+      font-size: 14px;
       color: rgba(255,255,255,0.4);
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
-    .stat-card.highlight .stat-unit {
-      color: rgba(0,212,170,0.6);
+    .stat-card.highlight .stat-unit { color: rgba(0,212,170,0.6); }
+    .stat-card.highlight-gold .stat-unit { color: rgba(255,200,0,0.5); }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 2px 4px 0;
     }
 
     #status-bar {
       text-align: center;
       font-size: 13px;
       color: rgba(255,255,255,0.4);
-      padding: 8px;
-      min-height: 28px;
+      padding: 2px 8px;
+      min-height: 22px;
     }
 
-    #status-bar.active { color: #00d4aa; }
-    #status-bar.error { color: #ff6b6b; }
+    #status-bar.active     { color: #00d4aa; }
+    #status-bar.error      { color: #ff6b6b; }
+    #status-bar.background { color: #ffc800; }
 
     .btn-row {
+      flex-shrink: 0;
       display: flex;
       gap: 12px;
-      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      padding: 10px 20px max(16px, env(safe-area-inset-bottom));
+      background: #1a1a2e;
     }
 
     #start-btn {
       flex: 1;
-      padding: 20px;
+      padding: 18px;
       border: none;
       border-radius: 20px;
       font-size: 20px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.1s, opacity 0.2s;
+      transition: transform 0.1s;
       background: #00d4aa;
       color: #1a1a2e;
     }
 
-    #start-btn.running {
-      background: #ff6b6b;
-      color: #fff;
-    }
-
-    #start-btn:active { transform: scale(0.97); }
+    #start-btn.running { background: #ff6b6b; color: #fff; }
+    #start-btn:active  { transform: scale(0.97); }
 
     #reset-btn {
-      padding: 20px 24px;
+      padding: 18px 22px;
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 20px;
       font-size: 20px;
@@ -174,17 +184,22 @@
       width: 100%;
       border-radius: 24px 24px 0 0;
       padding: 24px 24px max(24px, env(safe-area-inset-bottom));
+      max-height: 88vh;
+      overflow-y: auto;
     }
 
-    .modal-sheet h2 {
-      font-size: 18px;
-      margin-bottom: 24px;
-      color: #00d4aa;
+    .modal-sheet h2 { font-size: 18px; margin-bottom: 20px; color: #00d4aa; }
+
+    .modal-section {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 18px 0 12px;
     }
 
-    .setting-row {
-      margin-bottom: 20px;
-    }
+    .setting-row { margin-bottom: 14px; }
 
     .setting-row label {
       display: block;
@@ -207,9 +222,7 @@
       outline: none;
     }
 
-    .setting-row input:focus {
-      border-color: #00d4aa;
-    }
+    .setting-row input:focus { border-color: #00d4aa; }
 
     #save-settings {
       width: 100%;
@@ -224,6 +237,19 @@
       margin-top: 8px;
     }
 
+    #clear-cumulative {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: rgba(255,80,80,0.8);
+      border: 1px solid rgba(255,80,80,0.3);
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     #gps-dot {
       display: inline-block;
       width: 8px;
@@ -234,12 +260,13 @@
       vertical-align: middle;
     }
 
-    #gps-dot.on { background: #00d4aa; animation: pulse 1.5s infinite; }
-    #gps-dot.error { background: #ff6b6b; animation: none; }
+    #gps-dot.on    { background: #00d4aa; animation: pulse 1.5s infinite; }
+    #gps-dot.bg    { background: #ffc800; animation: pulse 2s infinite; }
+    #gps-dot.error { background: #ff6b6b; }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50%       { opacity: 0.3; }
     }
   </style>
 </head>
@@ -251,11 +278,12 @@
 </header>
 
 <main>
+  <!-- ── Fahrt ── -->
   <div class="stats-grid">
     <div class="stat-card highlight">
       <div class="stat-label">Geld gespart</div>
       <div class="stat-value" id="money">0.00</div>
-      <div class="stat-unit">Euro</div>
+      <div class="stat-unit">Euro (Sprit)</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Sprit gespart</div>
@@ -288,9 +316,56 @@
     <span id="gps-dot"></span>
     <span id="status-text">Bereit</span>
   </div>
+
+  <!-- ── Fahrzeugverschleiß ── -->
+  <div class="section-title">Fahrzeugverschleiß gespart</div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Reifenverschleiß</div>
+      <div class="stat-value" id="wear-tire">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ölverbrauch</div>
+      <div class="stat-value" id="wear-oil">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Wartungsintervall</div>
+      <div class="stat-value" id="wear-service">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Wertverlust</div>
+      <div class="stat-value" id="wear-dep">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card highlight">
+      <div class="stat-label">Σ Verschleiß (Fahrt)</div>
+      <div class="stat-value" id="wear-total">0.00</div>
+      <div class="stat-unit">Euro</div>
+    </div>
+    <div class="stat-card highlight-gold">
+      <div class="stat-label">Gesamtersparnis (Fahrt)</div>
+      <div class="stat-value" id="grand-total">0.00</div>
+      <div class="stat-unit">Sprit + Verschleiß</div>
+    </div>
+  </div>
+
+  <!-- ── Kumuliert ── -->
+  <div class="section-title">Kumuliert</div>
+
+  <div class="stats-grid">
+    <div class="stat-card highlight-gold">
+      <div class="stat-label">Gesamt gespart</div>
+      <div class="stat-value" id="cumulative-total">0.00</div>
+      <div class="stat-unit" id="cumulative-info">0 Fahrten · 0.0 km</div>
+    </div>
+  </div>
 </main>
 
-<div class="btn-row" style="padding: 0 20px 20px;">
+<div class="btn-row">
   <button id="start-btn">▶ Start</button>
   <button id="reset-btn">↺</button>
 </div>
@@ -299,6 +374,8 @@
 <div id="settings-modal">
   <div class="modal-sheet">
     <h2>⚙️ Einstellungen</h2>
+
+    <div class="modal-section">Spritkosten</div>
     <div class="setting-row">
       <label>Spritpreis (€/Liter)</label>
       <input type="number" id="input-price" step="0.01" min="0.5" max="5">
@@ -311,124 +388,202 @@
       <label>CO₂ pro Liter Benzin (Gramm)</label>
       <input type="number" id="input-co2" step="1" min="100" max="5000">
     </div>
+
+    <div class="modal-section">Fahrzeugverschleiß (€/km)</div>
+    <div class="setting-row">
+      <label>Reifenverschleiß</label>
+      <input type="number" id="input-wear-tire" step="0.001" min="0" max="1">
+    </div>
+    <div class="setting-row">
+      <label>Ölverbrauch</label>
+      <input type="number" id="input-wear-oil" step="0.001" min="0" max="1">
+    </div>
+    <div class="setting-row">
+      <label>Wartungsintervall</label>
+      <input type="number" id="input-wear-service" step="0.001" min="0" max="1">
+    </div>
+    <div class="setting-row">
+      <label>Wertverlust</label>
+      <input type="number" id="input-wear-dep" step="0.01" min="0" max="2">
+    </div>
+
     <button id="save-settings">Speichern</button>
+    <button id="clear-cumulative">Gesamtstatistik löschen</button>
   </div>
 </div>
 
 <script>
-  // Settings
-  const defaults = { price: 1.80, consumption: 7.0, co2PerLiter: 2392 };
-  let settings = { ...defaults, ...JSON.parse(localStorage.getItem('settings') || '{}') };
+  // ── Einstellungen ────────────────────────────────────────────────────────
+  const DEFAULTS = {
+    price: 1.80, consumption: 7.0, co2PerLiter: 2392,
+    wearTire: 0.010, wearOil: 0.005, wearService: 0.020, wearDep: 0.100
+  };
+  let settings   = { ...DEFAULTS, ...JSON.parse(localStorage.getItem('settings')   || '{}') };
+  let cumulative = JSON.parse(localStorage.getItem('cumulative') || '{"fuel":0,"wear":0,"distance":0,"trips":0}');
 
-  // State
-  let running = false;
-  let watchId = null;
-  let lastPos = null;
-  let totalDistance = 0; // km
-  let startTime = null;
-  let timerInterval = null;
-  let currentSpeed = 0;
+  // ── Fahrt-Zustand ────────────────────────────────────────────────────────
+  let running = false, watchId = null, lastPos = null;
+  let totalDistance = 0, startTime = null, currentSpeed = 0;
 
-  // DOM
-  const moneyEl = document.getElementById('money');
-  const litersEl = document.getElementById('liters');
-  const distanceEl = document.getElementById('distance');
-  const speedEl = document.getElementById('speed');
-  const co2El = document.getElementById('co2');
-  const timeEl = document.getElementById('time');
-  const statusText = document.getElementById('status-text');
-  const gpsDot = document.getElementById('gps-dot');
-  const startBtn = document.getElementById('start-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  const settingsBtn = document.getElementById('settings-btn');
-  const settingsModal = document.getElementById('settings-modal');
+  // ── DOM ──────────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  const moneyEl       = $('money'),        litersEl     = $('liters');
+  const distanceEl    = $('distance'),     speedEl      = $('speed');
+  const co2El         = $('co2'),          timeEl       = $('time');
+  const wearTireEl    = $('wear-tire'),    wearOilEl    = $('wear-oil');
+  const wearServiceEl = $('wear-service'), wearDepEl    = $('wear-dep');
+  const wearTotalEl   = $('wear-total'),   grandTotalEl = $('grand-total');
+  const cumTotalEl    = $('cumulative-total'), cumInfoEl = $('cumulative-info');
+  const statusText    = $('status-text'),  gpsDot       = $('gps-dot');
+  const startBtn      = $('start-btn'),    resetBtn     = $('reset-btn');
+  const settingsModal = $('settings-modal');
 
+  // ── Web Worker: Timer überlebt Tab-Drosselung ────────────────────────────
+  const WORKER_SRC = `
+    let iv = null;
+    onmessage = ({ data }) => {
+      if (data === 'start') { clearInterval(iv); iv = setInterval(() => postMessage('tick'), 1000); }
+      else if (data === 'stop') { clearInterval(iv); }
+    };
+  `;
+  let timerWorker = null, fallbackTimer = null;
+  try {
+    const blob = new Blob([WORKER_SRC], { type: 'application/javascript' });
+    timerWorker = new Worker(URL.createObjectURL(blob));
+    timerWorker.onmessage = () => updateTimer();
+  } catch (e) { /* Worker nicht verfügbar — Fallback via setInterval */ }
+
+  // ── Wake Lock: Bildschirm bleibt an ─────────────────────────────────────
+  let wakeLock = null;
+  async function acquireWakeLock() {
+    if (!('wakeLock' in navigator)) return;
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      // Automatisch neu anfordern falls Betriebssystem es freigibt
+      wakeLock.addEventListener('release', () => { if (running) acquireWakeLock(); });
+    } catch (e) {}
+  }
+  function releaseWakeLock() { wakeLock?.release(); wakeLock = null; }
+
+  // ── Page Visibility API: Status im Hintergrund ───────────────────────────
+  document.addEventListener('visibilitychange', () => {
+    if (!running) return;
+    if (document.visibilityState === 'hidden') {
+      setStatus('Läuft im Hintergrund…', 'background');
+    } else {
+      acquireWakeLock();
+      setStatus('GPS aktiv', 'active');
+    }
+  });
+
+  // ── Haversine-Formel ─────────────────────────────────────────────────────
   function haversine(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 +
-              Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
+    const R = 6371, r = x => x * Math.PI / 180;
+    const a = Math.sin(r(lat2-lat1)/2)**2
+            + Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(r(lon2-lon1)/2)**2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  function updateDisplay() {
+  // ── Berechnungen ─────────────────────────────────────────────────────────
+  function calc() {
     const liters = totalDistance * settings.consumption / 100;
-    const money = liters * settings.price;
-    const co2 = liters * settings.co2PerLiter;
+    const fuel   = liters * settings.price;
+    const co2    = liters * settings.co2PerLiter;
+    const tire   = totalDistance * settings.wearTire;
+    const oil    = totalDistance * settings.wearOil;
+    const svc    = totalDistance * settings.wearService;
+    const dep    = totalDistance * settings.wearDep;
+    const wear   = tire + oil + svc + dep;
+    return { liters, fuel, co2, tire, oil, svc, dep, wear, grand: fuel + wear };
+  }
 
-    moneyEl.textContent = money.toFixed(2);
-    litersEl.textContent = liters.toFixed(2);
-    distanceEl.textContent = totalDistance.toFixed(2);
-    speedEl.textContent = Math.round(currentSpeed);
-    co2El.textContent = Math.round(co2);
+  function updateDisplay() {
+    const v = calc();
+    moneyEl.textContent       = v.fuel.toFixed(2);
+    litersEl.textContent      = v.liters.toFixed(2);
+    distanceEl.textContent    = totalDistance.toFixed(2);
+    speedEl.textContent       = Math.round(currentSpeed);
+    co2El.textContent         = Math.round(v.co2);
+    wearTireEl.textContent    = v.tire.toFixed(2);
+    wearOilEl.textContent     = v.oil.toFixed(2);
+    wearServiceEl.textContent = v.svc.toFixed(2);
+    wearDepEl.textContent     = v.dep.toFixed(2);
+    wearTotalEl.textContent   = v.wear.toFixed(2);
+    grandTotalEl.textContent  = v.grand.toFixed(2);
+
+    const cTotal = cumulative.fuel + cumulative.wear + v.grand;
+    const cDist  = (cumulative.distance + totalDistance).toFixed(1);
+    cumTotalEl.textContent = cTotal.toFixed(2);
+    cumInfoEl.textContent  = `${cumulative.trips} Fahrten gespeichert · ${cDist} km gesamt`;
   }
 
   function updateTimer() {
     if (!startTime) return;
-    const secs = Math.floor((Date.now() - startTime) / 1000);
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    timeEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    timeEl.textContent = `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
   }
 
   function setStatus(msg, type = '') {
     statusText.textContent = msg;
-    const statusBar = document.getElementById('status-bar');
-    statusBar.className = type;
-    gpsDot.className = type === 'active' ? 'on' : type === 'error' ? 'error' : '';
+    $('status-bar').className = type;
+    gpsDot.className = { active: 'on', background: 'bg', error: 'error' }[type] ?? '';
   }
 
+  // ── Fahrt-Steuerung ──────────────────────────────────────────────────────
   function start() {
-    if (!navigator.geolocation) {
-      setStatus('GPS nicht verfügbar', 'error');
-      return;
-    }
-
+    if (!navigator.geolocation) { setStatus('GPS nicht verfügbar', 'error'); return; }
     setStatus('GPS wird aktiviert…', '');
     running = true;
     startBtn.textContent = '⏹ Stop';
     startBtn.classList.add('running');
     startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
+
+    if (timerWorker) timerWorker.postMessage('start');
+    else fallbackTimer = setInterval(updateTimer, 1000);
+
+    acquireWakeLock();
 
     watchId = navigator.geolocation.watchPosition(
-      pos => {
-        const { latitude: lat, longitude: lon, speed } = pos.coords;
+      ({ coords: { latitude: lat, longitude: lon, speed } }) => {
         currentSpeed = speed ? speed * 3.6 : 0;
-
         if (lastPos) {
           const d = haversine(lastPos.lat, lastPos.lon, lat, lon);
-          if (d > 0.005) { // ignore jumps under 5m noise
-            totalDistance += d;
-            updateDisplay();
-          }
+          if (d > 0.005) { totalDistance += d; updateDisplay(); }
         }
         lastPos = { lat, lon };
-        setStatus('GPS aktiv', 'active');
+        if (document.visibilityState === 'visible') setStatus('GPS aktiv', 'active');
       },
-      err => {
-        setStatus('GPS Fehler: ' + err.message, 'error');
-      },
+      err => setStatus('GPS Fehler: ' + err.message, 'error'),
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
     );
   }
 
   function stop() {
     running = false;
-    if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-    clearInterval(timerInterval);
+    if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+    if (timerWorker) timerWorker.postMessage('stop');
+    else { clearInterval(fallbackTimer); fallbackTimer = null; }
+    releaseWakeLock();
     lastPos = null;
     startBtn.textContent = '▶ Start';
     startBtn.classList.remove('running');
     setStatus('Gestoppt', '');
   }
 
+  function bankTrip() {
+    if (totalDistance < 0.01) return;
+    const v = calc();
+    cumulative.fuel     += v.fuel;
+    cumulative.wear     += v.wear;
+    cumulative.distance += totalDistance;
+    cumulative.trips++;
+    localStorage.setItem('cumulative', JSON.stringify(cumulative));
+  }
+
   function reset() {
+    bankTrip();
     stop();
-    totalDistance = 0;
-    currentSpeed = 0;
-    startTime = null;
+    totalDistance = 0; currentSpeed = 0; startTime = null;
     timeEl.textContent = '0:00';
     updateDisplay();
     setStatus('Bereit', '');
@@ -437,11 +592,15 @@
   startBtn.addEventListener('click', () => running ? stop() : start());
   resetBtn.addEventListener('click', reset);
 
-  // Settings
-  settingsBtn.addEventListener('click', () => {
-    document.getElementById('input-price').value = settings.price;
-    document.getElementById('input-consumption').value = settings.consumption;
-    document.getElementById('input-co2').value = settings.co2PerLiter;
+  // ── Einstellungen ────────────────────────────────────────────────────────
+  $('settings-btn').addEventListener('click', () => {
+    $('input-price').value         = settings.price;
+    $('input-consumption').value   = settings.consumption;
+    $('input-co2').value           = settings.co2PerLiter;
+    $('input-wear-tire').value     = settings.wearTire;
+    $('input-wear-oil').value      = settings.wearOil;
+    $('input-wear-service').value  = settings.wearService;
+    $('input-wear-dep').value      = settings.wearDep;
     settingsModal.classList.add('open');
   });
 
@@ -449,30 +608,32 @@
     if (e.target === settingsModal) settingsModal.classList.remove('open');
   });
 
-  document.getElementById('save-settings').addEventListener('click', () => {
-    settings.price = parseFloat(document.getElementById('input-price').value) || defaults.price;
-    settings.consumption = parseFloat(document.getElementById('input-consumption').value) || defaults.consumption;
-    settings.co2PerLiter = parseFloat(document.getElementById('input-co2').value) || defaults.co2PerLiter;
+  $('save-settings').addEventListener('click', () => {
+    const n = (id, def) => parseFloat($(id).value) || def;
+    settings = {
+      price:       n('input-price',        DEFAULTS.price),
+      consumption: n('input-consumption',  DEFAULTS.consumption),
+      co2PerLiter: n('input-co2',          DEFAULTS.co2PerLiter),
+      wearTire:    n('input-wear-tire',    DEFAULTS.wearTire),
+      wearOil:     n('input-wear-oil',     DEFAULTS.wearOil),
+      wearService: n('input-wear-service', DEFAULTS.wearService),
+      wearDep:     n('input-wear-dep',     DEFAULTS.wearDep),
+    };
     localStorage.setItem('settings', JSON.stringify(settings));
     settingsModal.classList.remove('open');
     updateDisplay();
   });
 
-  // PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-
-  // Wake Lock (screen on while riding)
-  let wakeLock = null;
-  async function requestWakeLock() {
-    if ('wakeLock' in navigator) {
-      try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
-    }
-  }
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && running) requestWakeLock();
+  $('clear-cumulative').addEventListener('click', () => {
+    if (!confirm('Gesamtstatistik wirklich löschen?')) return;
+    cumulative = { fuel: 0, wear: 0, distance: 0, trips: 0 };
+    localStorage.removeItem('cumulative');
+    settingsModal.classList.remove('open');
+    updateDisplay();
   });
+
+  // ── PWA ──────────────────────────────────────────────────────────────────
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 
   updateDisplay();
 </script>
